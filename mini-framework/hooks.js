@@ -1,18 +1,22 @@
 import { rerender } from "./render.js"
 
-let state
+const states = []
+let state_index = 0
 
 export function use_state(initial_value) {
-    if (state === undefined) {
-        state = initial_value
+    const index = state_index
+
+    if (states[index] === undefined) {
+        states[index] = initial_value
     }
 
-    const set_state = (new_value) => {
-        state = new_value
+    const set_state = (value) => {
+        states[index] = value
         rerender()
     }
 
-    return [state, set_state]
+    state_index++
+    return [states[index], set_state]
 }
 
 export function use_effect(callback) {
