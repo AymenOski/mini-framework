@@ -12,15 +12,88 @@
  * - UPDATE_TEXT: Text content changed
  */
 
-export function diff(oldVdom, newVdom) {
+const PATCH_TYPES = {
+    CREATE: 'CREATE',
+    REMOVE: 'REMOVE',
+    REPLACE: 'REPLACE',
+    UPDATE_PROPS: 'UPDATE_PROPS',
+    UPDATE_TEXT: 'UPDATE_TEXT'
+};
+
+export function diff(oldVdom, newVdom, path = '') {
     const patches = new Map();
-    
+
     // first render: oldVdom is null
     if (oldVdom === null) {
-        // Return one big CREATE patch at root path '' with full newVdom
-        patches.set('', [{ type: 'CREATE', vdom: newVdom }]);
+        patches.set('', [{ type: PATCH_TYPES.CREATE, vdom: newVdom }]);
         return patches;
     }
+
+    // Unmount
+    if (oldVdom !== null && newVdom === null) {
+        patches.set(path, [{ type: PATCH_TYPES.REMOVE, vdom: oldVdom }]);
+        return patches;
+    }
+
+    // Text node
+    if (typeof oldVdom === 'string' && typeof newVdom === 'string') {
+        if (oldVdom !== newVdom) {
+            patches.set(path, [{ type: PATCH_TYPES.UPDATE_TEXT, text: newVdom }]);
+        }
+        return patches;
+    }
+
+    // Different tags
+    if (oldVdom.tag !== newVdom.tag) {
+        patches.set(path, [{ type: PATCH_TYPES.REPLACE, vdom: newVdom }]);
+        return patches;
+    }
+
+    // Same tag: compare props and children
+    // Compare props
+    const propPatches = diffProps(oldVdom.props || {}, newVdom.props || {});
+    if (propPatches.length > 0) {
+        const list = patches.get(path) || [];
+        patches.set(path, [...list, ...propPatches]);
+    }
+
+    // Compare children
+    const oldChildren = oldVdom.children || [];
+    const newChildren = newVdom.children || [];
+    const maxLen = Math.max(oldChildren.length, newChildren.length);
+
+    for (let i = 0; i < maxLen; i++) {
+        const childPath = path === '' ? `${i}` : `${path},${i}`;
+        const childPatches = diff(oldChildren[i], newChildren[i], childPath);
+
+        // Merge child patches into main patches
+        childPatches.forEach((patchList, key) => {
+            const existing = patches.get(key) || [];
+            patches.set(key, [...existing, ...patchList]);
+        });
+    }
+
+    return patches;
+}
+
+// Helper: Compare props → return array of prop patches
+function diffProps(oldProps = {}, newProps = {}) {
+    const patches = [];
+    const allKeys = new Set([...Object.keys(oldProps), ...Object.keys(newProps)]);
+
+    allKeys.forEach(key => {
+        const oldVal = oldProps[key];
+        const newVal = newProps[key];
         
+        // be careful Ousama when rendering, if the prop is removed, newVal will be undefined, so the condition will be met and a patch will be created ; that's why u should check if the value is undefined and handle it accordingly
+        if (oldVal !== newVal) {
+            patches.push({
+                type: PATCH_TYPES.UPDATE_PROPS,
+                key: key,
+                value: newVal  // undefined value means remove the prop
+            });
+        }
+    });
+
     return patches;
 }
