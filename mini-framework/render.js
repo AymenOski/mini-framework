@@ -1,4 +1,8 @@
+import { reset_hook_index, run_effects } from './hooks.js'
+
 export function render(component_fn, container) {
+    reset_hook_index()
+    
     const vnode = component_fn()
     container.innerHTML = ''
     
@@ -10,4 +14,6 @@ export function render(component_fn, container) {
     }
     
     container.appendChild(dom_element)
+    
+    run_effects() // runs immediately, not async
 }
