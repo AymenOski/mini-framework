@@ -104,9 +104,11 @@ function diffProps(oldProps = {}, newProps = {}) {
     allKeys.forEach(key => {
         const oldVal = oldProps[key];
         const newVal = newProps[key];
-        
+
         // be careful Ousama when rendering, if the prop is removed, newVal will be undefined, so the condition will be met and a patch will be created ; that's why u should check if the value is undefined and handle it accordingly
-        if (oldVal !== newVal) {
+        // Always patch 'checked' and 'value' because DOM state might have changed (user interaction)
+        // even if VDOM props look the same (e.g. index-based diffing reusing dirty elements)
+        if (oldVal !== newVal || key === 'checked' || key === 'value') {
             patches.push({
                 type: PATCH_TYPES.UPDATE_PROPS,
                 key: key,
