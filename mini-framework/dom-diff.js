@@ -23,23 +23,43 @@ const PATCH_TYPES = {
 export function diff(oldVdom, newVdom, path = '') {
     const patches = new Map();
 
-    // first render: oldVdom is null
-    if (oldVdom === null) {
-        patches.set('', [{ type: PATCH_TYPES.CREATE, vdom: newVdom }]);
+    // Treat undefined and null the same
+    const oldIsNullish = oldVdom == null;
+    const newIsNullish = newVdom == null;
+
+    // Nothing on either side
+    if (oldIsNullish && newIsNullish) {
         return patches;
     }
 
-    // Unmount
-    if (oldVdom !== null && newVdom === null) {
+    // Create
+    if (oldIsNullish && !newIsNullish) {
+        patches.set(path, [{ type: PATCH_TYPES.CREATE, vdom: newVdom }]);
+        return patches;
+    }
+
+    // Remove
+    if (!oldIsNullish && newIsNullish) {
         patches.set(path, [{ type: PATCH_TYPES.REMOVE, vdom: oldVdom }]);
         return patches;
     }
 
     // Text node
-    if (typeof oldVdom === 'string' && typeof newVdom === 'string') {
-        if (oldVdom !== newVdom) {
-            patches.set(path, [{ type: PATCH_TYPES.UPDATE_TEXT, text: newVdom }]);
+    const oldIsText = typeof oldVdom === 'string' || typeof oldVdom === 'number';
+    const newIsText = typeof newVdom === 'string' || typeof newVdom === 'number';
+
+    if (oldIsText && newIsText) {
+        const oldText = oldVdom.toString();
+        const newText = newVdom.toString();
+        if (oldText !== newText) {
+            patches.set(path, [{ type: PATCH_TYPES.UPDATE_TEXT, text: newText }]);
         }
+        return patches;
+    }
+
+    // Node type changed (text <-> element)
+    if (oldIsText !== newIsText) {
+        patches.set(path, [{ type: PATCH_TYPES.REPLACE, vdom: newVdom }]);
         return patches;
     }
 

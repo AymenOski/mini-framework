@@ -1,87 +1,87 @@
-import { update } from "./render.js"
+import { update } from "./virtual-dom.js"
 
-const states = [], effect_dependencies = [], effect_cleanups = [], refs = []
-let state_index = 0, effect_index = 0, ref_index = 0
-const pending_effects = [] // Queue 
+const states = [], effectDependencies = [], effectCleanups = [], refs = []
+let stateIndex = 0, effectIndex = 0, refIndex = 0
+const pendingEffects = [] // Queue 
 
-export function use_state(initial_value) {
-    const current_index = state_index
-    if (states[current_index] === undefined) {
-        states[current_index] = initial_value
+export function useState(initialValue) {
+    const currentIndex = stateIndex
+    if (states[currentIndex] === undefined) {
+        states[currentIndex] = initialValue
     }
 
-    const current_state = states[current_index]
+    const currentState = states[currentIndex]
 
-    const set_state = (new_value) => {
-        const updated_value = typeof new_value === 'function'
-            ? new_value(states[current_index])
-            : new_value
-        if (states[current_index] !== updated_value) {
-            states[current_index] = updated_value
+    const setState = (newValue) => {
+        const updatedValue = typeof newValue === 'function'
+            ? newValue(states[currentIndex])
+            : newValue
+        if (states[currentIndex] !== updatedValue) {
+            states[currentIndex] = updatedValue
             update() 
         }
     }
 
-    state_index++
-    return [current_state, set_state]
+    stateIndex++
+    return [currentState, setState]
 }
 
-export function use_effect(callback, dependencies) {
-    const current_index = effect_index
-    const prev_dependencies = effect_dependencies[current_index]
+export function useEffect(callback, dependencies) {
+    const currentIndex = effectIndex
+    const prevDependencies = effectDependencies[currentIndex]
 
-    let should_run = false
+    let shouldRun = false
     if (dependencies === undefined) {
-        should_run = true 
-    } else if (prev_dependencies === undefined) {
-        should_run = true 
-    } else if (dependencies.length !== prev_dependencies.length) {
-        should_run = true 
+        shouldRun = true 
+    } else if (prevDependencies === undefined) {
+        shouldRun = true 
+    } else if (dependencies.length !== prevDependencies.length) {
+        shouldRun = true 
     } else {
-        should_run = dependencies.some((dep, i) => dep !== prev_dependencies[i])
+        shouldRun = dependencies.some((dep, i) => dep !== prevDependencies[i])
     }
 
-    if (should_run) {
-        pending_effects.push(() => {
-            if (typeof effect_cleanups[current_index] === 'function') {
-                effect_cleanups[current_index]()
+    if (shouldRun) {
+        pendingEffects.push(() => {
+            if (typeof effectCleanups[currentIndex] === 'function') {
+                effectCleanups[currentIndex]()
             }
             const cleanup = callback()
-            effect_cleanups[current_index] = cleanup
+            effectCleanups[currentIndex] = cleanup
         })
     }
 
-    effect_dependencies[current_index] = dependencies
-    effect_index++
+    effectDependencies[currentIndex] = dependencies
+    effectIndex++
 }
 
-export function use_ref(initial_value) {
-    const current_index = ref_index
-    if (refs[current_index] === undefined) {
-        refs[current_index] = { current: initial_value }
+export function useRef(initialValue) {
+    const currentIndex = refIndex
+    if (refs[currentIndex] === undefined) {
+        refs[currentIndex] = { current: initialValue }
     }
-    ref_index++
-    return refs[current_index]
+    refIndex++
+    return refs[currentIndex]
 }
 
-export function reset_hook_index() {
-    state_index = 0
-    effect_index = 0
-    ref_index = 0
+export function resetHookIndex() {
+    stateIndex = 0
+    effectIndex = 0
+    refIndex = 0
 }
 
-export function run_effects() {
-    const effects_to_run = [...pending_effects]
-    pending_effects.length = 0
-    effects_to_run.forEach(effect => effect())
+export function runEffects() {
+    const effectsToRun = [...pendingEffects]
+    pendingEffects.length = 0
+    effectsToRun.forEach(effect => effect())
 }
 
-export function cleanup_effects() {
-    effect_cleanups.forEach(cleanup => {
+export function cleanupEffects() {
+    effectCleanups.forEach(cleanup => {
         if (typeof cleanup === 'function') cleanup()
     })
     states.length = 0
-    effect_dependencies.length = 0
-    effect_cleanups.length = 0
+    effectDependencies.length = 0
+    effectCleanups.length = 0
     refs.length = 0
 }
