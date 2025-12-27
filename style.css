@@ -24,6 +24,9 @@ body {
     padding: 0;
     font-family: var(--font-serif);
     background-color: var(--bg-color);
+    background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, 0.02) 2px, rgba(0, 0, 0, 0.02) 4px),
+        repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0, 0, 0, 0.02) 2px, rgba(0, 0, 0, 0.02) 4px);
     color: var(--text-color);
     min-height: 100vh;
     display: block;
@@ -77,11 +80,14 @@ label {
 */
 
 .navbar {
-    background-color: var(--accent-orange);
+    background: linear-gradient(180deg, #ffb080 0%, var(--accent-orange) 50%, #ff8a48 100%);
     border: var(--border-width) solid var(--text-color);
     margin-bottom: 20px;
     padding: 15px 0;
-    box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.2);
+    box-shadow:
+        5px 5px 0 rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3),
+        inset 0 -1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .navbar-tabs {
@@ -132,12 +138,16 @@ label {
 */
 
 .main {
-    background-color: var(--accent-orange);
+    background: linear-gradient(180deg, #ffb080 0%, var(--accent-orange) 50%, #ff8a48 100%);
     border: var(--border-width) solid var(--text-color);
     padding: 20px;
     /* Inner padding around the list items */
     margin-bottom: 20px;
-    box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.2);
+    box-shadow:
+        5px 5px 0 rgba(0, 0, 0, 0.2),
+        8px 8px 15px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3),
+        inset 0 -1px 2px rgba(0, 0, 0, 0.1);
 }
 
 /* 
@@ -171,13 +181,16 @@ label {
     color: #888;
     outline: none;
     font-style: italic;
-    background-color: var(--input-bg);
+    background: linear-gradient(180deg, #fffef5 0%, var(--input-bg) 100%);
     border: var(--border-width) solid var(--text-color);
     padding: 10px 20px;
     padding-right: 60px;
     /* Space for button */
     height: 60px;
-    box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.2);
+    box-shadow:
+        5px 5px 0 rgba(0, 0, 0, 0.2),
+        inset 2px 2px 4px rgba(0, 0, 0, 0.1),
+        inset -1px -1px 2px rgba(255, 255, 255, 0.5);
 }
 
 .new-todo::placeholder {
@@ -194,7 +207,7 @@ label {
 .submit-todo {
     position: absolute;
     right: 5px;
-    background-color: var(--accent-orange);
+    background: linear-gradient(180deg, #ffb080 0%, var(--accent-orange) 50%, #ff8a48 100%);
     border: var(--border-width) solid var(--text-color);
     color: var(--text-color);
     font-size: 24px;
@@ -205,15 +218,26 @@ label {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.1s;
+    transition: all 0.2s;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.4),
+        inset 0 -1px 2px rgba(0, 0, 0, 0.2),
+        2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .submit-todo:hover {
-    background-color: #4CAF50;
+    background: linear-gradient(180deg, #6dd181 0%, #4CAF50 50%, #3d9142 100%);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.4),
+        inset 0 -1px 2px rgba(0, 0, 0, 0.2),
+        2px 2px 6px rgba(0, 0, 0, 0.3);
 }
 
 .submit-todo:active {
-    transform: scale(0.95);
+    transform: translateY(1px);
+    box-shadow:
+        inset 0 1px 3px rgba(0, 0, 0, 0.3),
+        1px 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .new-todo::placeholder {
@@ -238,7 +262,7 @@ label {
 
 .toggle-all+label {
     display: inline-block;
-    background-color: var(--accent-orange);
+    background: linear-gradient(180deg, #ffb080 0%, var(--accent-orange) 50%, #ff8a48 100%);
     border: var(--border-width) solid var(--text-color);
     padding: 0 20px;
     height: 60px;
@@ -249,19 +273,29 @@ label {
     font-style: italic;
     color: var(--text-color);
     cursor: pointer;
-    box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.2);
-    transition: transform 0.1s;
+    box-shadow:
+        5px 5px 0 rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4),
+        inset 0 -1px 2px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s;
     white-space: nowrap;
     margin-right: 20px;
     /* Added spacing */
 }
 
 .toggle-all+label:hover {
-    background-color: #4CAF50;
+    background: linear-gradient(180deg, #6dd181 0%, #4CAF50 50%, #3d9142 100%);
+    box-shadow:
+        5px 5px 0 rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5),
+        inset 0 -1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .toggle-all+label:active {
-    transform: scale(0.98);
+    transform: translateY(2px);
+    box-shadow:
+        3px 3px 0 rgba(0, 0, 0, 0.2),
+        inset 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 
@@ -353,13 +387,19 @@ label {
     width: 100%;
     height: 100%;
     border: var(--border-width) solid var(--text-color);
-    background: transparent;
+    background: linear-gradient(135deg, #fdfec0 0%, #f9f9b0 100%);
+    box-shadow:
+        inset 1px 1px 3px rgba(0, 0, 0, 0.15),
+        inset -1px -1px 2px rgba(255, 255, 255, 0.5);
 }
 
 /* Checked State */
 .toggle:checked+.custom-checkbox {
-    background-color: #4CAF50;
+    background: linear-gradient(135deg, #6dd181 0%, #4CAF50 50%, #3d9142 100%);
     position: relative;
+    box-shadow:
+        inset 2px 2px 4px rgba(0, 0, 0, 0.3),
+        inset -1px -1px 2px rgba(255, 255, 255, 0.2);
 }
 
 .toggle:checked+.custom-checkbox::after {
@@ -412,7 +452,7 @@ label {
 }
 
 .clear-completed {
-    background-color: var(--accent-orange);
+    background: linear-gradient(180deg, #ffb080 0%, var(--accent-orange) 50%, #ff8a48 100%);
     border: var(--border-width) solid var(--text-color);
     color: var(--text-color);
     font-family: var(--font-serif);
@@ -420,16 +460,26 @@ label {
     font-weight: 700;
     padding: 15px 40px;
     cursor: pointer;
-    transition: transform 0.1s;
-    box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.2);
+    transition: all 0.2s;
+    box-shadow:
+        5px 5px 0 rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4),
+        inset 0 -1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .clear-completed:hover {
-    background-color: #F4442E;
+    background: linear-gradient(180deg, #ff6f5e 0%, #F4442E 50%, #d1341a 100%);
+    box-shadow:
+        5px 5px 0 rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5),
+        inset 0 -1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .clear-completed:active {
-    transform: scale(0.98);
+    transform: translateY(2px);
+    box-shadow:
+        3px 3px 0 rgba(0, 0, 0, 0.2),
+        inset 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 /* 
