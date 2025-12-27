@@ -135,12 +135,24 @@ function App() {
                     }),
                     h('label', { for: 'toggle-all' }, activeCount === 0 && todos.length > 0 ? 'Unmark All' : 'Mark All')
                 ),
-                h('input', {
-                    className: 'new-todo',
-                    placeholder: 'what needs to be done ?',
-                    autofocus: true,
-                    onkeydown: handleNewTodoKeyDown
-                })
+                h('div', { className: 'input-wrapper' },
+                    h('input', {
+                        className: 'new-todo',
+                        placeholder: 'what needs to be done ?',
+                        autofocus: true,
+                        onkeydown: handleNewTodoKeyDown
+                    }),
+                    h('button', {
+                        className: 'submit-todo',
+                        onclick: () => {
+                            const input = document.querySelector('.new-todo');
+                            if (input && input.value.trim()) {
+                                addTodo(input.value.trim());
+                                input.value = '';
+                            }
+                        }
+                    }, '→')
+                )
             ),
             todos.length > 0 ? h('ul', { className: 'todo-list', key: filter },
                 ...visibleTodos.map(todo =>

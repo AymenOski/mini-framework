@@ -154,6 +154,13 @@ label {
     margin-bottom: 20px;
 }
 
+.input-wrapper {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
 .new-todo {
     flex: 1;
     border: none;
@@ -167,9 +174,46 @@ label {
     background-color: var(--input-bg);
     border: var(--border-width) solid var(--text-color);
     padding: 10px 20px;
+    padding-right: 60px;
+    /* Space for button */
     height: 60px;
-    /* margin-right removed */
     box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.2);
+}
+
+.new-todo::placeholder {
+    color: #999;
+    font-style: italic;
+    font-weight: 700;
+    opacity: 0.6;
+}
+
+.new-todo:focus {
+    color: var(--text-color);
+}
+
+.submit-todo {
+    position: absolute;
+    right: 5px;
+    background-color: var(--accent-orange);
+    border: var(--border-width) solid var(--text-color);
+    color: var(--text-color);
+    font-size: 24px;
+    font-weight: 700;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.1s;
+}
+
+.submit-todo:hover {
+    background-color: #4CAF50;
+}
+
+.submit-todo:active {
+    transform: scale(0.95);
 }
 
 .new-todo::placeholder {
