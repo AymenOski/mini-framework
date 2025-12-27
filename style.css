@@ -30,12 +30,45 @@ body {
     padding-top: 40px;
 }
 
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(-20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
 .todoapp {
     width: 100%;
     max-width: none;
     /* Full width */
     margin: 0;
     padding: 20px;
+    animation: fadeIn 0.6s ease-out;
+}
+
+/* Global Transitions */
+button,
+input,
+a,
+label {
+    transition: all 0.3s ease;
 }
 
 /* 
@@ -194,11 +227,14 @@ body {
     list-style: none;
     margin: 0;
     padding: 0;
+    /* Apply fade in to the whole list when key changes */
+    animation: fadeIn 0.4s ease-out;
 }
 
 .todo-list li {
     border-bottom: 1px solid #c97a45;
     padding: 15px 0;
+    /* Removed per-item animation */
 }
 
 .todo-list li:last-child {
@@ -208,6 +244,16 @@ body {
 .view {
     display: flex;
     align-items: center;
+    transition: background-color 0.2s;
+    border-radius: 4px;
+    /* Slight rounding for hover effect if we added bg */
+    padding: 5px;
+    /* Add some padding for hover area */
+}
+
+.view:hover {
+    background-color: rgba(255, 157, 92, 0.1);
+    /* Subtle orange highlight */
 }
 
 /* Delete Button (Right) */

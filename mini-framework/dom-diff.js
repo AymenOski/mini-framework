@@ -63,6 +63,14 @@ export function diff(oldVdom, newVdom, path = '') {
         return patches;
     }
 
+    // Different keys (Force replace)
+    const oldKey = oldVdom.props ? oldVdom.props.key : undefined;
+    const newKey = newVdom.props ? newVdom.props.key : undefined;
+    if (oldKey !== newKey) {
+        patches.set(path, [{ type: PATCH_TYPES.REPLACE, vdom: newVdom }]);
+        return patches;
+    }
+
     // Different tags
     if (oldVdom.tag !== newVdom.tag) {
         patches.set(path, [{ type: PATCH_TYPES.REPLACE, vdom: newVdom }]);

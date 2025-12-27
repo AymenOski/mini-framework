@@ -142,7 +142,7 @@ function App() {
                     onkeydown: handleNewTodoKeyDown
                 })
             ),
-            todos.length > 0 ? h('ul', { className: 'todo-list' },
+            todos.length > 0 ? h('ul', { className: 'todo-list', key: filter },
                 ...visibleTodos.map(todo =>
                     h('li', { className: todo.completed ? 'completed' : '' },
                         h('div', { className: 'view' },
