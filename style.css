@@ -39,54 +39,6 @@ body {
 }
 
 /* 
-    HEADER 
-    ======
-*/
-
-.header {
-    margin-bottom: 20px;
-}
-
-.header-input-container {
-    display: flex;
-    align-items: center;
-    background-color: var(--input-bg);
-    border: var(--border-width) solid var(--text-color);
-    padding: 10px 20px;
-    position: relative;
-    /* Clean, boxy look */
-    height: 80px;
-    box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.2);
-}
-
-.new-todo {
-    flex: 1;
-    border: none;
-    background: transparent;
-    font-family: var(--font-serif);
-    font-size: 28px;
-    font-weight: 700;
-    color: #888;
-    /* Placeholder color style */
-    outline: none;
-    font-style: italic;
-    /* "what needs to be done ?" looks italic */
-}
-
-.new-todo::placeholder {
-    color: #999;
-    font-style: italic;
-    font-weight: 700;
-    opacity: 0.6;
-}
-
-.new-todo:focus {
-    color: var(--text-color);
-}
-
-
-
-/* 
     NAVBAR 
     ======
 */
@@ -118,7 +70,6 @@ body {
     color: var(--text-color);
     font-size: 24px;
     font-weight: 700;
-    /* "All Tasks." is bold serif */
     display: block;
     width: 100%;
 }
@@ -128,8 +79,6 @@ body {
 }
 
 .tab.active {
-    /* No distinct active state style visible in image except maybe being "Bold" ? They all look bold. */
-    /* I'll add an underline for active state logic */
     text-decoration: underline;
 }
 
@@ -140,7 +89,6 @@ body {
     height: 40px;
     border-left: var(--border-width) solid var(--text-color);
     content: '';
-    /* We use border instead of text char for cleaner line */
     width: 0;
     display: block;
 }
@@ -159,15 +107,88 @@ body {
     box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.2);
 }
 
-/* Hide toggle-all visual */
+/* 
+    ACTION BAR (Input + Toggle)
+    ==========================
+*/
+
+.input-action-bar {
+    display: flex;
+    align-items: center;
+    background-color: transparent;
+    border-bottom: 2px solid #c97a45;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+}
+
+.new-todo {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-family: var(--font-serif);
+    font-size: 28px;
+    font-weight: 700;
+    color: #888;
+    outline: none;
+    font-style: italic;
+    background-color: var(--input-bg);
+    border: var(--border-width) solid var(--text-color);
+    padding: 10px 20px;
+    height: 60px;
+    /* margin-right removed */
+    box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.2);
+}
+
+.new-todo::placeholder {
+    color: #999;
+    font-style: italic;
+    font-weight: 700;
+    opacity: 0.6;
+}
+
+.new-todo:focus {
+    color: var(--text-color);
+}
+
+.toggle-all-wrapper {
+    display: flex;
+    align-items: center;
+}
+
 .toggle-all {
     display: none;
 }
 
 .toggle-all+label {
-    display: none;
-    /* Hide standard TodoMVC toggle-all label */
+    display: inline-block;
+    background-color: var(--accent-orange);
+    border: var(--border-width) solid var(--text-color);
+    padding: 0 20px;
+    height: 60px;
+    line-height: 56px;
+    /* Center text vertically */
+    font-size: 20px;
+    font-weight: 700;
+    font-style: italic;
+    color: var(--text-color);
+    cursor: pointer;
+    box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.2);
+    transition: transform 0.1s;
+    white-space: nowrap;
+    margin-right: 20px;
+    /* Added spacing */
 }
+
+.toggle-all+label:hover {
+    background-color: #4CAF50;
+}
+
+.toggle-all+label:active {
+    transform: scale(0.98);
+}
+
+
+/* List Items */
 
 .todo-list {
     list-style: none;
@@ -177,7 +198,6 @@ body {
 
 .todo-list li {
     border-bottom: 1px solid #c97a45;
-    /* Slightly darker orange line separator */
     padding: 15px 0;
 }
 
@@ -188,6 +208,33 @@ body {
 .view {
     display: flex;
     align-items: center;
+}
+
+/* Delete Button (Right) */
+.destroy {
+    display: flex;
+    /* Always visible */
+    justify-content: center;
+    align-items: center;
+    margin-left: auto;
+    /* Push to right */
+    background: none;
+    border: 2px solid var(--text-color);
+    width: 30px;
+    height: 30px;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--text-color);
+    font-weight: bold;
+    line-height: 1;
+    padding-bottom: 4px;
+    /* visual adjustment for 'x' */
+    opacity: 1;
+}
+
+.destroy:hover {
+    background-color: var(--text-color);
+    color: var(--accent-orange);
 }
 
 /* Custom Checkbox */
@@ -217,15 +264,11 @@ body {
     height: 100%;
     border: var(--border-width) solid var(--text-color);
     background: transparent;
-    /* Empty box */
 }
 
 /* Checked State */
 .toggle:checked+.custom-checkbox {
-    /* Maybe an X or filled? Image shows empty boxes for incomplete. */
-    /* For complete, I'll add a check mark or fill it. */
-    background-color: var(--text-color);
-    /* Fill black? Or create a checkmark. */
+    background-color: #4CAF50;
     position: relative;
 }
 
@@ -238,9 +281,6 @@ body {
     width: 12px;
     height: 20px;
     border: solid var(--bg-color);
-    /* Light check on dark box? Or black check on empty? */
-    /* Let's do black check on empty box to be safe visually unless filled is desired style. */
-    /* Actually let's just make it a simple X or check. */
     border-width: 0 3px 3px 0;
     transform: rotate(45deg);
 }
@@ -252,31 +292,12 @@ body {
 
 .view label {
     flex: 1;
-    /* Ensure label takes up available space */
     font-size: 20px;
     font-weight: 700;
     font-style: italic;
     margin-left: 10px;
     word-break: break-all;
     line-height: 1.4;
-}
-
-.destroy {
-    display: block;
-    /* Always take up space */
-    opacity: 0;
-    /* Hidden by default */
-    margin-left: auto;
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    color: #a00;
-    transition: opacity 0.2s;
-}
-
-.view:hover .destroy {
-    opacity: 1;
 }
 
 /* 
@@ -286,10 +307,18 @@ body {
 
 .footer {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    align-items: center;
     background: transparent;
     border: none;
-    padding: 0;
+    padding: 10px 0;
+}
+
+.todo-count {
+    font-size: 18px;
+    font-weight: 700;
+    font-style: italic;
+    margin-left: 20px;
 }
 
 .clear-completed {
@@ -326,7 +355,19 @@ body {
         display: none;
     }
 
-    .header-input-container {
+    .input-action-bar {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
         height: auto;
+    }
+
+    .new-todo {
+        margin-right: 0;
+    }
+
+    .toggle-all+label {
+        width: 100%;
+        text-align: center;
     }
 }

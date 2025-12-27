@@ -86,69 +86,7 @@ function App() {
 
     // --- RENDER HELPERS ---
 
-    // Header
-    const renderHeader = () => (
-        h('header', { className: 'header' },
-            h('div', { className: 'header-input-container' },
-                h('input', {
-                    className: 'new-todo',
-                    placeholder: 'what needs to be done ?',
-                    autofocus: true,
-                    onkeydown: handleNewTodoKeyDown
-                })
-            )
-        )
-    );
-
-    // Main Section (List)
-    const renderMain = () => {
-        // Always render renderMain container so we can maintain the orange box structure if desired, 
-        // but typically TodoMVC hides main when no todos. 
-        // The image shows the list populated. 
-        // I will stick to standard behavior but ensure the container is styled right when present.
-        if (todos.length === 0) return null;
-
-        return h('section', { className: 'main' },
-            h('input', {
-                id: 'toggle-all',
-                className: 'toggle-all',
-                type: 'checkbox',
-                checked: activeCount === 0,
-                onchange: () => {
-                    const allCompleted = activeCount === 0;
-                    setTodos(todos.map(t => ({ ...t, completed: !allCompleted })));
-                }
-            }),
-            h('label', { for: 'toggle-all' }, 'Mark all as complete'),
-            h('ul', { className: 'todo-list' },
-                ...visibleTodos.map(todo =>
-                    h('li', { className: todo.completed ? 'completed' : '' },
-                        h('div', { className: 'view' },
-                            h('div', { className: 'checkbox-wrapper' },
-                                h('input', {
-                                    className: 'toggle',
-                                    type: 'checkbox',
-                                    checked: todo.completed,
-                                    onchange: () => toggleTodo(todo.id)
-                                }),
-                                h('span', { className: 'custom-checkbox' })
-                            ),
-                            h('label', null, todo.title),
-                            // Destroy button might be hidden in design or hover-only. 
-                            // I'll keep it but style it invisibly unless hovered if needed.
-                            // The image doesn't show it explicitly on the items.
-                            h('button', {
-                                className: 'destroy',
-                                onclick: () => deleteTodo(todo.id)
-                            })
-                        )
-                    )
-                )
-            )
-        );
-    };
-
-    // Navbar with Filter Tabs
+    // Navbar with Filter Tabs (Now Top)
     const renderNavbar = () => (
         h('nav', { className: 'navbar' },
             h('ul', { className: 'navbar-tabs' },
@@ -176,15 +114,68 @@ function App() {
         )
     );
 
+    // Main Section (List + Input + Toggle All)
+    const renderMain = () => {
+        // We render main layout structure even if empty to show the input box
+        // But TodoMVC logic often hides list. 
+        // With this new design, the input IS in the main box, so the main box must always be visible.
+
+        return h('section', { className: 'main' },
+            h('div', { className: 'input-action-bar' },
+                h('div', { className: 'toggle-all-wrapper' },
+                    h('input', {
+                        id: 'toggle-all',
+                        className: 'toggle-all',
+                        type: 'checkbox',
+                        checked: activeCount === 0 && todos.length > 0,
+                        onchange: () => {
+                            const allCompleted = activeCount === 0;
+                            setTodos(todos.map(t => ({ ...t, completed: !allCompleted })));
+                        }
+                    }),
+                    h('label', { for: 'toggle-all' }, activeCount === 0 && todos.length > 0 ? 'Unmark All' : 'Mark All')
+                ),
+                h('input', {
+                    className: 'new-todo',
+                    placeholder: 'what needs to be done ?',
+                    autofocus: true,
+                    onkeydown: handleNewTodoKeyDown
+                })
+            ),
+            todos.length > 0 ? h('ul', { className: 'todo-list' },
+                ...visibleTodos.map(todo =>
+                    h('li', { className: todo.completed ? 'completed' : '' },
+                        h('div', { className: 'view' },
+                            h('div', { className: 'checkbox-wrapper' },
+                                h('input', {
+                                    className: 'toggle',
+                                    type: 'checkbox',
+                                    checked: todo.completed,
+                                    onchange: () => toggleTodo(todo.id)
+                                }),
+                                h('span', { className: 'custom-checkbox' })
+                            ),
+                            h('label', null, todo.title),
+                            h('button', {
+                                className: 'destroy',
+                                onclick: () => deleteTodo(todo.id)
+                            }, '×')
+                        )
+                    )
+                )
+            ) : null
+        );
+    };
+
     // Footer
     const renderFooter = () => {
-        // Show footer only if there are completed tasks? 
-        // The image shows "Clear Completed Tasks." button. 
-        // I'll show it if there are completed tasks, or maybe always if the design implies it.
-        // Standard TodoMVC behavior: footer hidden if no todos. 
         if (todos.length === 0) return null;
 
         return h('footer', { className: 'footer' },
+            h('span', { className: 'todo-count' },
+                h('strong', null, activeCount),
+                activeCount === 1 ? ' item left' : ' items left'
+            ),
             completedCount > 0 ? h('button', {
                 className: 'clear-completed',
                 onclick: clearCompleted
@@ -195,10 +186,9 @@ function App() {
     // --- MAIN RENDER ---
 
     return h('div', { className: 'todoapp' },
-        renderHeader(),
-        renderNavbar(),
-        renderMain(),
-        renderFooter()
+        renderNavbar(), // Navbar First
+        renderMain(),   // Main (with Input)
+        renderFooter()  // Footer
     );
 }
 
