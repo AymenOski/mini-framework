@@ -89,18 +89,23 @@ function App() {
     // Header
     const renderHeader = () => (
         h('header', { className: 'header' },
-            h('h1', null, 'todos'),
-            h('input', {
-                className: 'new-todo',
-                placeholder: 'What needs to be done?',
-                autofocus: true,
-                onkeydown: handleNewTodoKeyDown
-            })
+            h('div', { className: 'header-input-container' },
+                h('input', {
+                    className: 'new-todo',
+                    placeholder: 'what needs to be done ?',
+                    autofocus: true,
+                    onkeydown: handleNewTodoKeyDown
+                })
+            )
         )
     );
 
     // Main Section (List)
     const renderMain = () => {
+        // Always render renderMain container so we can maintain the orange box structure if desired, 
+        // but typically TodoMVC hides main when no todos. 
+        // The image shows the list populated. 
+        // I will stick to standard behavior but ensure the container is styled right when present.
         if (todos.length === 0) return null;
 
         return h('section', { className: 'main' },
@@ -119,13 +124,19 @@ function App() {
                 ...visibleTodos.map(todo =>
                     h('li', { className: todo.completed ? 'completed' : '' },
                         h('div', { className: 'view' },
-                            h('input', {
-                                className: 'toggle',
-                                type: 'checkbox',
-                                checked: todo.completed,
-                                onchange: () => toggleTodo(todo.id)
-                            }),
+                            h('div', { className: 'checkbox-wrapper' },
+                                h('input', {
+                                    className: 'toggle',
+                                    type: 'checkbox',
+                                    checked: todo.completed,
+                                    onchange: () => toggleTodo(todo.id)
+                                }),
+                                h('span', { className: 'custom-checkbox' })
+                            ),
                             h('label', null, todo.title),
+                            // Destroy button might be hidden in design or hover-only. 
+                            // I'll keep it but style it invisibly unless hovered if needed.
+                            // The image doesn't show it explicitly on the items.
                             h('button', {
                                 className: 'destroy',
                                 onclick: () => deleteTodo(todo.id)
@@ -137,39 +148,47 @@ function App() {
         );
     };
 
-    // Footer
-    const renderFooter = () => {
-        if (todos.length === 0) return null;
-
-        return h('footer', { className: 'footer' },
-            h('span', { className: 'todo-count' },
-                h('strong', null, activeCount),
-                activeCount === 1 ? ' item left' : ' items left'
-            ),
-            h('ul', { className: 'filters' },
+    // Navbar with Filter Tabs
+    const renderNavbar = () => (
+        h('nav', { className: 'navbar' },
+            h('ul', { className: 'navbar-tabs' },
                 h('li', null,
                     h('a', {
                         href: '#/',
-                        className: filter === 'all' ? 'selected' : ''
-                    }, 'All')
+                        className: `tab ${filter === 'all' ? 'active' : ''}`
+                    }, 'All Tasks.')
                 ),
+                h('span', { className: 'tab-divider' }),
                 h('li', null,
                     h('a', {
                         href: '#/active',
-                        className: filter === 'active' ? 'selected' : ''
-                    }, 'Active')
+                        className: `tab ${filter === 'active' ? 'active' : ''}`
+                    }, 'Active Tasks.')
                 ),
+                h('span', { className: 'tab-divider' }),
                 h('li', null,
                     h('a', {
                         href: '#/completed',
-                        className: filter === 'completed' ? 'selected' : ''
-                    }, 'Completed')
+                        className: `tab ${filter === 'completed' ? 'active' : ''}`
+                    }, 'Completed Tasks.')
                 )
-            ),
+            )
+        )
+    );
+
+    // Footer
+    const renderFooter = () => {
+        // Show footer only if there are completed tasks? 
+        // The image shows "Clear Completed Tasks." button. 
+        // I'll show it if there are completed tasks, or maybe always if the design implies it.
+        // Standard TodoMVC behavior: footer hidden if no todos. 
+        if (todos.length === 0) return null;
+
+        return h('footer', { className: 'footer' },
             completedCount > 0 ? h('button', {
                 className: 'clear-completed',
                 onclick: clearCompleted
-            }, 'Clear completed') : null
+            }, 'Clear Completed Tasks.') : null
         );
     };
 
@@ -177,6 +196,7 @@ function App() {
 
     return h('div', { className: 'todoapp' },
         renderHeader(),
+        renderNavbar(),
         renderMain(),
         renderFooter()
     );
