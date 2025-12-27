@@ -256,13 +256,13 @@ label {
 }
 
 .toggle-all+label {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     background: linear-gradient(180deg, #ffb080 0%, var(--accent-orange) 50%, #ff8a48 100%);
     border: var(--border-width) solid var(--text-color);
     padding: 0 20px;
     height: 60px;
-    line-height: 56px;
-    /* Center text vertically */
     font-size: 20px;
     font-weight: 700;
     font-style: italic;
