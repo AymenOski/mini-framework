@@ -1,9 +1,3 @@
-/* 
-    RETRO SERIF DESIGN - TODOMVC
-    ============================
-    Based on provided image.
-*/
-
 :root {
     --bg-color: #f3f4c8;
     --accent-orange: #ff9d5c;
@@ -12,7 +6,7 @@
     --text-color: #000000;
     --border-color: #333;
     --border-width: 1.5px;
-    --font-serif: "Times New Roman", Times, serif;
+    --font-serif: Georgia, "Palatino Linotype", "Book Antiqua", Palatino, serif;
 }
 
 * {
@@ -111,6 +105,7 @@ label {
     font-weight: 700;
     display: block;
     width: 100%;
+    text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.3);
 }
 
 .tab:hover {
