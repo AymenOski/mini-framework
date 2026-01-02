@@ -13,6 +13,8 @@ function App() {
     // --- STATE ---
     const [todos, setTodos] = useState([]);
     const [filter, setFilter] = useState('all');
+    const [editingId, setEditingId] = useState(null);
+    const [editText, setEditText] = useState('');
 
     // --- EFFECTS ---
 
@@ -41,6 +43,17 @@ function App() {
         });
     }, []);
 
+    // Focus edit input when editing starts
+    useEffect(() => {
+        if (editingId) {
+            const editInput = document.querySelector('.edit');
+            if (editInput) {
+                editInput.focus();
+                editInput.select();
+            }
+        }
+    }, [editingId]);
+
     // --- HANDLERS ---
 
     const addTodo = (title) => {
@@ -64,6 +77,38 @@ function App() {
 
     const clearCompleted = () => {
         setTodos(todos.filter(t => !t.completed));
+    };
+
+    const startEditing = (todo) => {
+        setEditingId(todo.id);
+        setEditText(todo.title);
+    };
+
+    const saveEdit = (id) => {
+        const trimmed = editText.trim();
+        if (trimmed) {
+            setTodos(todos.map(t =>
+                t.id === id ? { ...t, title: trimmed } : t
+            ));
+        } else {
+            // Delete if empty
+            setTodos(todos.filter(t => t.id !== id));
+        }
+        setEditingId(null);
+        setEditText('');
+    };
+
+    const cancelEdit = () => {
+        setEditingId(null);
+        setEditText('');
+    };
+
+    const handleEditKeyDown = (e, id) => {
+        if (e.key === 'Enter') {
+            saveEdit(id);
+        } else if (e.key === 'Escape') {
+            cancelEdit();
+        }
     };
 
     const handleNewTodoKeyDown = (e) => {
@@ -155,8 +200,12 @@ function App() {
                 )
             ),
             todos.length > 0 ? h('ul', { className: 'todo-list', key: filter },
-                ...visibleTodos.map(todo =>
-                    h('li', { className: todo.completed ? 'completed' : '' },
+                ...visibleTodos.map(todo => {
+                    const isEditing = editingId === todo.id;
+                    return h('li', { 
+                        className: `${todo.completed ? 'completed' : ''} ${isEditing ? 'editing' : ''}`,
+                        key: todo.id
+                    },
                         h('div', { className: 'view' },
                             h('div', { className: 'checkbox-wrapper' },
                                 h('input', {
@@ -167,14 +216,24 @@ function App() {
                                 }),
                                 h('span', { className: 'custom-checkbox' })
                             ),
-                            h('label', null, todo.title),
+                            h('label', { 
+                                ondblclick: () => startEditing(todo)
+                            }, todo.title),
                             h('button', {
                                 className: 'destroy',
                                 onclick: () => deleteTodo(todo.id)
                             }, '×')
-                        )
-                    )
-                )
+                        ),
+                        isEditing ? h('input', {
+                            className: 'edit',
+                            value: editText,
+                            oninput: (e) => setEditText(e.target.value),
+                            onkeydown: (e) => handleEditKeyDown(e, todo.id),
+                            onblur: () => saveEdit(todo.id),
+                            autofocus: true
+                        }) : null
+                    );
+                })
             ) : null
         );
     };
