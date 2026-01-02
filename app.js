@@ -131,74 +131,33 @@ function App() {
 
     // --- RENDER HELPERS ---
 
-    // Navbar with Filter Tabs (Now Top)
-    const renderNavbar = () => (
-        h('nav', { className: 'navbar' },
-            h('ul', { className: 'navbar-tabs' },
-                h('li', null,
-                    h('a', {
-                        href: '#/',
-                        className: `tab ${filter === 'all' ? 'active' : ''}`
-                    }, 'All Tasks.')
-                ),
-                h('span', { className: 'tab-divider' }),
-                h('li', null,
-                    h('a', {
-                        href: '#/active',
-                        className: `tab ${filter === 'active' ? 'active' : ''}`
-                    }, 'Active Tasks.')
-                ),
-                h('span', { className: 'tab-divider' }),
-                h('li', null,
-                    h('a', {
-                        href: '#/completed',
-                        className: `tab ${filter === 'completed' ? 'active' : ''}`
-                    }, 'Completed Tasks.')
-                )
-            )
+    // Header with title and filters
+    const renderHeader = () => (
+        h('header', null,
+            h('h1', null, 'todos'),
+            h('input', {
+                className: 'new-todo',
+                placeholder: 'What needs to be done?',
+                autofocus: true,
+                onkeydown: handleNewTodoKeyDown
+            })
         )
     );
 
-    // Main Section (List + Input + Toggle All)
+    // Main Section (List)
     const renderMain = () => {
-        // We render main layout structure even if empty to show the input box
-        // But TodoMVC logic often hides list. 
-        // With this new design, the input IS in the main box, so the main box must always be visible.
-
         return h('section', { className: 'main' },
-            h('div', { className: 'input-action-bar' },
-                h('div', { className: 'toggle-all-wrapper' },
-                    h('input', {
-                        id: 'toggle-all',
-                        className: 'toggle-all',
-                        type: 'checkbox',
-                        checked: activeCount === 0 && todos.length > 0,
-                        onchange: () => {
-                            const allCompleted = activeCount === 0;
-                            setTodos(todos.map(t => ({ ...t, completed: !allCompleted })));
-                        }
-                    }),
-                    h('label', { for: 'toggle-all' }, activeCount === 0 && todos.length > 0 ? 'Unmark All' : 'Mark All')
-                ),
-                h('div', { className: 'input-wrapper' },
-                    h('input', {
-                        className: 'new-todo',
-                        placeholder: 'what needs to be done ?',
-                        autofocus: true,
-                        onkeydown: handleNewTodoKeyDown
-                    }),
-                    h('button', {
-                        className: 'submit-todo',
-                        onclick: () => {
-                            const input = document.querySelector('.new-todo');
-                            if (input && input.value.trim()) {
-                                addTodo(input.value.trim());
-                                input.value = '';
-                            }
-                        }
-                    }, '→')
-                )
-            ),
+            h('input', {
+                id: 'toggle-all',
+                className: 'toggle-all',
+                type: 'checkbox',
+                checked: activeCount === 0 && todos.length > 0,
+                onchange: () => {
+                    const allCompleted = activeCount === 0;
+                    setTodos(todos.map(t => ({ ...t, completed: !allCompleted })));
+                }
+            }),
+            h('label', { for: 'toggle-all' }, ''),
             todos.length > 0 ? h('ul', { className: 'todo-list', key: filter },
                 ...visibleTodos.map(todo => {
                     const isEditing = editingId === todo.id;
@@ -207,15 +166,12 @@ function App() {
                         key: todo.id
                     },
                         h('div', { className: 'view' },
-                            h('div', { className: 'checkbox-wrapper' },
-                                h('input', {
-                                    className: 'toggle',
-                                    type: 'checkbox',
-                                    checked: todo.completed,
-                                    onchange: () => toggleTodo(todo.id)
-                                }),
-                                h('span', { className: 'custom-checkbox' })
-                            ),
+                            h('input', {
+                                className: 'toggle',
+                                type: 'checkbox',
+                                checked: todo.completed,
+                                onchange: () => toggleTodo(todo.id)
+                            }),
                             h('label', { 
                                 ondblclick: () => startEditing(todo)
                             }, todo.title),
@@ -247,19 +203,39 @@ function App() {
                 h('strong', null, activeCount),
                 activeCount === 1 ? ' item left' : ' items left'
             ),
+            h('ul', { className: 'filters' },
+                h('li', null,
+                    h('a', {
+                        href: '#/',
+                        className: filter === 'all' ? 'selected' : ''
+                    }, 'All')
+                ),
+                h('li', null,
+                    h('a', {
+                        href: '#/active',
+                        className: filter === 'active' ? 'selected' : ''
+                    }, 'Active')
+                ),
+                h('li', null,
+                    h('a', {
+                        href: '#/completed',
+                        className: filter === 'completed' ? 'selected' : ''
+                    }, 'Completed')
+                )
+            ),
             completedCount > 0 ? h('button', {
                 className: 'clear-completed',
                 onclick: clearCompleted
-            }, 'Clear Completed Tasks.') : null
+            }, 'Clear completed') : null
         );
     };
 
     // --- MAIN RENDER ---
 
     return h('div', { className: 'todoapp' },
-        renderNavbar(), // Navbar First
-        renderMain(),   // Main (with Input)
-        renderFooter()  // Footer
+        renderHeader(),
+        renderMain(),
+        renderFooter()
     );
 }
 
