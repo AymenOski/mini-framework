@@ -1,106 +1,99 @@
 # Mini-Framework
 
-## What You're Building
+A lightweight, functional, Virtual DOM-based JavaScript framework for building modern web applications. This framework was built from scratch to demonstrate core concepts like DOM abstraction, state management, and routing without external dependencies.
 
-A JavaScript framework with Virtual DOM, diffing, routing, state management, and events. Test it with TodoMVC.
+## Features
 
-## Team Breakdown (3 People)
+- **Virtual DOM**: Efficiently updates only the parts of the DOM that changed.
+- **React-like Hooks**: useState, useEffect, and useRef for state, side effects, and references
+- **Routing**: A built-in hash-based router for single-page applications.
+- **Event Handling**: Declarative event listeners via props.
+- **Component-Based**: Build UI using reusable functional components.
 
-**Team 1: Virtual DOM + Diffing**
-- `create-element.js` - Build virtual DOM objects
-- `virtual-dom.js` - Manage virtual tree
-- `dom-diff.js` - Diffing algorithm (the hard part)
+## Objectives Implemented
 
-**Team 2: Rendering + Hooks + Events**
-- `render.js` - Real DOM + patching
-- `hooks.js` - useState, useEffect, useRef (hooks-based state)
-- Event delegation system + synthetic events
-- Handle onClick, onChange, etc.
+- Abstracting the DOM (Virtual DOM)
+- Routing System
+- State Management
+- Event Handling
+- TodoMVC Project
 
-**Team 3: Routing + App**
-- `router.js` - Hash-based routing (#/, #/active, #/completed)
-- `app.js` - TodoMVC logic (add, delete, filter, persist, state structure)
+---
 
-## Core Concepts (Must Know)
+## Documentation
 
-1. **Virtual DOM**: JS object representation of DOM
-2. **Diffing**: Compare old & new vdom, generate patches
-3. **State-Driven**: State changes → UI updates (not manual DOM manipulation)
-4. **Routing**: URL hash changes trigger state updates
-5. **Hooks**: useState, useEffect, useRef for state & side effects
+### 1. Creating an Element
+To create an element, use the `createElement` function (often aliased as `h`). It takes the tag name, an object of properties (attributes and events), and any number of children.
 
-## TodoMVC Requirements
+```javascript
+import { createElement as h } from './mini-framework/create-element.js';
 
-- Add/delete/edit todos
-- Check/uncheck (mark complete)
-- Filter: All / Active / Completed
-- Clear completed button
-- Item counter
-- URL synced with filter
-- Persist in localStorage
-
-## File Structure
-
-```
-mini-framework/
-├── mini-framework/
-│   ├── create-element.js
-│   ├── virtual-dom.js
-│   ├── dom-diff.js
-│   ├── render.js
-│   ├── hooks.js
-│   └── router.js
-├── index.html
-├── app.js
-├── style.css
-└── resources/styles/index.css
+const element = h('div', { className: 'container' }, 'Hello World');
 ```
 
-## Performance Requirements
+### 2. Adding Attributes
+Attributes are passed as a plain JavaScript object in the second argument of `h`. Use `className` for the `class` attribute.
 
-- **60 FPS minimum**
-- No frame drops
-- Use requestAnimationFrame
-- Minimal DOM reflows
+```javascript
+const input = h('input', { 
+    type: 'text', 
+    placeholder: 'Enter name...',
+    value: 'John Doe',
+    className: 'form-control'
+});
+```
 
-## Start Here
+### 3. Creating an Event
+Events are added by prefixing the event name with `on` in the props object.
 
-1. Team 1: `create-element.js` - make it return `{tag, props, children}`
-2. Team 2: `render.js` - convert vdom to real DOM + hooks implementation
-3. Team 3: `router.js` & `app.js` - routing + app logic
-4. Integrate all parts together
-5. Test in browser - check performance
+```javascript
+const button = h('button', {
+    onclick: () => alert('Button clicked!')
+}, 'Click Me');
+```
 
-## What You'll Learn
+### 4. Nesting Elements
+Elements can be nested by passing other virtual nodes as children to the `h` function.
 
-**As a Team:**
-- How modern frameworks work internally (React, Vue, Angular)
-- How to architect scalable applications
-- Performance optimization techniques
-- Separation of concerns & modularity
-- Event system design patterns
+```javascript
+const list = h('ul', { className: 'list' },
+    h('li', null, 'Item 1'),
+    h('li', null, 'Item 2'),
+    h('li', null, 'Item 3')
+);
+```
 
-**Team 1 (Virtual DOM + Diffing):**
-- Recursive algorithms & tree traversal
-- Time complexity optimization (O(n) diffing)
-- Data structure design
-- Algorithm efficiency & performance
-- Interview-ready algorithm implementation
+---
 
-**Team 2 (Rendering + Hooks + Events):**
-- DOM manipulation & performance
-- React-like hooks implementation (useState, useEffect, useRef)
-- Event delegation patterns
-- Memory management & cleanup
-- Browser rendering cycles (reflow/repaint)
+## Why it works the way it works
 
-**Team 3 (Routing + App):**
-- Application state design & architecture
-- Routing patterns & URL management
-- Feature implementation from scratch
-- Data persistence (localStorage)
-- Complex UI logic & user interactions
+### Abstracting the DOM (Virtual DOM)
+Direct DOM manipulation is expensive and hard to manage. Our framework uses a **Virtual DOM**—a lightweight JavaScript object representation of the real DOM. 
 
-## Next Project
+1. **Render**: Components return a Virtual DOM tree.
+2. **Diff**: When state changes, a new Virtual DOM tree is created. The framework compares (diffs) the new tree with the previous one.
+3. **Patch**: The framework calculates the minimal set of changes (patches) needed and applies them to the real DOM.
 
-**bomberman-dom** - Multiplayer game using this framework.
+### Reconciliation Algorithm
+The `dom-diff.js` module implements a recursive diffing algorithm that identifies:
+- Node replacements (if tags change).
+- Attribute updates.
+- Text content changes.
+- Child additions or removals.
+
+### Hooks and State
+The `hooks.js` module maintains an internal array of states. Because components are just functions, we use a global index to track which `useState` call corresponds to which state slot. This index is reset on every render cycle, ensuring hooks are always associated with the correct data.
+
+### Routing
+The `router.js` module listens for `hashchange` events. When the URL hash changes (e.g., from `#/` to `#/active`), it triggers a callback that updates the application state, causing the UI to reflect the current route.
+
+---
+
+## TodoMVC Project
+A fully functional TodoMVC application is included in `app.js`. It demonstrates:
+- Complex state management (list of objects).
+- Conditional rendering based on routes.
+- LocalStorage persistence using `useEffect`.
+- Event handling for keyboard and mouse interactions.
+
+To run the project, simply open `index.html` in any modern web browser.
