@@ -178,7 +178,7 @@ function App() {
                             h('button', {
                                 className: 'destroy',
                                 onclick: () => deleteTodo(todo.id)
-                            }, '×')
+                            })
                         ),
                         isEditing ? h('input', {
                             className: 'edit',
