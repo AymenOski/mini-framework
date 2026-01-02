@@ -131,9 +131,9 @@ function App() {
 
     // --- RENDER HELPERS ---
 
-    // Header with title and filters
+    // Header with title and input
     const renderHeader = () => (
-        h('header', null,
+        h('header', { className: 'header' },
             h('h1', null, 'todos'),
             h('input', {
                 className: 'new-todo',
@@ -146,24 +146,27 @@ function App() {
 
     // Main Section (List)
     const renderMain = () => {
-        return h('section', { className: 'main' },
-            h('input', {
-                id: 'toggle-all',
-                className: 'toggle-all',
-                type: 'checkbox',
-                checked: activeCount === 0 && todos.length > 0,
-                onchange: () => {
-                    const allCompleted = activeCount === 0;
-                    setTodos(todos.map(t => ({ ...t, completed: !allCompleted })));
-                }
-            }),
-            h('label', { for: 'toggle-all' }, ''),
+        return h('main', { className: 'main' },
+            h('div', { className: 'toggle-all-container' },
+                h('input', {
+                    id: 'toggle-all',
+                    className: 'toggle-all',
+                    type: 'checkbox',
+                    checked: activeCount === 0 && todos.length > 0,
+                    onchange: () => {
+                        const allCompleted = activeCount === 0;
+                        setTodos(todos.map(t => ({ ...t, completed: !allCompleted })));
+                    }
+                }),
+                h('label', { className: 'toggle-all-label', for: 'toggle-all' }, 'Mark all as complete')
+            ),
             todos.length > 0 ? h('ul', { className: 'todo-list', key: filter },
                 ...visibleTodos.map(todo => {
                     const isEditing = editingId === todo.id;
                     return h('li', { 
                         className: `${todo.completed ? 'completed' : ''} ${isEditing ? 'editing' : ''}`,
-                        key: todo.id
+                        key: todo.id,
+                        'data-id': todo.id
                     },
                         h('div', { className: 'view' },
                             h('input', {
@@ -232,7 +235,7 @@ function App() {
 
     // --- MAIN RENDER ---
 
-    return h('div', { className: 'todoapp' },
+    return h('section', { className: 'todoapp' },
         renderHeader(),
         renderMain(),
         renderFooter()
