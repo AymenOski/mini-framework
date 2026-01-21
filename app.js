@@ -160,13 +160,11 @@ function App() {
                 }),
                 h('label', { className: 'toggle-all-label', for: 'toggle-all' }, 'Mark all as complete')
             ),
-            todos.length > 0 ? h('ul', { className: 'todo-list', key: filter },
+            todos.length > 0 ? h('ul', { className: 'todo-list'},
                 ...visibleTodos.map(todo => {
                     const isEditing = editingId === todo.id;
                     return h('li', { 
-                        className: `${todo.completed ? 'completed' : ''} ${isEditing ? 'editing' : ''}`,
-                        key: todo.id,
-                        'data-id': todo.id
+                        className: `${todo.completed ? 'completed' : ''} ${isEditing ? 'editing' : ''}`
                     },
                         h('div', { className: 'view' },
                             h('input', {
